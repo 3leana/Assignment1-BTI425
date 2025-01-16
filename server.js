@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
     res.json({ message: "API Listening" });
 });
 
-db.initialize('mongodb+srv://emita:xxx@cluster1.smd1k.mongodb.net/sample_airbnb?retryWrites=true&w=majority&appName=Cluster1')
+db.initialize(process.env.MONGODB_CONN_STRING)
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Server listening on: ${PORT}`);
