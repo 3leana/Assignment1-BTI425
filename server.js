@@ -19,8 +19,7 @@ const ListingsDB = require("./modules/listingsDB.js");
 const db = new ListingsDB();
 require('dotenv').config();
 
-const PORT = 8080;
-
+const PORT = 3000;
 
 app.use(express.json());
 
@@ -30,8 +29,8 @@ app.get('/', (req, res) => {
 
 db.initialize('mongodb+srv://emita:7Vo4YTn1QjtPotE7@cluster1.smd1k.mongodb.net/sample_airbnb?retryWrites=true&w=majority&appName=Cluster1')
   .then(() => {
-    app.listen(HTTP_PORT, () => {
-      console.log(`Server listening on: ${HTTP_PORT}`);
+    app.listen(PORT, () => {
+      console.log(`Server listening on: ${PORT}`);
     });
   })
   .catch((err) => {
@@ -39,10 +38,10 @@ db.initialize('mongodb+srv://emita:7Vo4YTn1QjtPotE7@cluster1.smd1k.mongodb.net/s
   }); 
 
 
-  app.post('/addListing', (req, res) => {
+  app.post('/api/listings', (req, res) => {
     const newListingData = req.body; 
     
-    listingsDB.addNewListing(newListingData)
+    db.addNewListing(newListingData)
       .then(newListing => {
         res.status(201).json(newListing); 
       })
@@ -51,10 +50,10 @@ db.initialize('mongodb+srv://emita:7Vo4YTn1QjtPotE7@cluster1.smd1k.mongodb.net/s
       });
   });
   
-  app.get('/listings', (req, res) => {
+  app.get('/api/listings', (req, res) => {
     const { page = 1, perPage = 5, name } = req.query; 
     
-    listingsDB.getAllListings(page, perPage, name)
+    db.getAllListings(page, perPage, name)
       .then(listings => {
         res.json(listings); 
       })
@@ -63,10 +62,12 @@ db.initialize('mongodb+srv://emita:7Vo4YTn1QjtPotE7@cluster1.smd1k.mongodb.net/s
       });
   });
   
-  app.get('/listing/:id', (req, res) => {
+  app.get('/api/listings/:id', async (req, res) => {
     const { id } = req.params; // Get the listing ID from the URL parameter
+
+
     
-    listingsDB.getListingById(id)
+    db.getListingById(id)
       .then(listing => {
         if (listing) {
           res.json(listing); 
@@ -77,13 +78,13 @@ db.initialize('mongodb+srv://emita:7Vo4YTn1QjtPotE7@cluster1.smd1k.mongodb.net/s
       .catch(err => {
         res.status(500).json({ error: err.message });
       });
+
   });
   
-  app.put('/listing/:id', (req, res) => {
-    const { id } = req.params; // Get the listing ID from the URL
+  app.put('/api/listings/:id', (req, res) => {
     const updatedData = req.body; // Get the updated data from the request body
   
-    listingsDB.updateListingById(updatedData, id)
+    db.updateListingById(updatedData, req.params.id)
       .then(result => {
         res.json({ message: "Listing updated", result });
       })
@@ -92,10 +93,10 @@ db.initialize('mongodb+srv://emita:7Vo4YTn1QjtPotE7@cluster1.smd1k.mongodb.net/s
       });
   });
   
-  app.delete('/listing/:id', (req, res) => {
+  app.delete('/api/listings/:id', (req, res) => {
     const { id } = req.params; // Get the listing ID from the URL
     
-    listingsDB.deleteListingById(id)
+    db.deleteListingById(id)
       .then(result => {
         res.json({ message: "Listing deleted", result });
       })
@@ -107,6 +108,6 @@ db.initialize('mongodb+srv://emita:7Vo4YTn1QjtPotE7@cluster1.smd1k.mongodb.net/s
   
 app.use(cors());
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+//     console.log(`Server running on http://localhost:${PORT}`);
+// });
