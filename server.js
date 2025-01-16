@@ -17,7 +17,7 @@ const app = express();
 const cors = require('cors');
 const ListingsDB = require("./modules/listingsDB.js");
 const db = new ListingsDB();
-require('dotenv').config();p
+require('dotenv').config();
   
 
 const PORT = process.env.MONGODB_CONN_STRING || 3000;
