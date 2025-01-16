@@ -18,10 +18,12 @@ const cors = require('cors');
 const ListingsDB = require("./modules/listingsDB.js");
 const db = new ListingsDB();
 require('dotenv').config();
+  
 
 const PORT = 3000;
 
 app.use(express.json());
+app.use(cors());
 
 app.get('/', (req, res) => {
     res.json({ message: "API Listening" });
@@ -105,8 +107,7 @@ db.initialize('mongodb+srv://emita:7Vo4YTn1QjtPotE7@cluster1.smd1k.mongodb.net/s
       });
   });
 
-  
-app.use(cors());
+
 
 // app.listen(PORT, () => {
 //     console.log(`Server running on http://localhost:${PORT}`);
